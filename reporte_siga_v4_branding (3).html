@@ -1,0 +1,382 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sg:#2DB84B;--sg-dark:#1E8A35;--sg-light:#E8F9ED;
+  --sg2:#228B3A;--sg-accent:#F5A623;
+  --c1:#1E8A35;--c2:#2DB84B;--c3:#E8F9ED;
+  --gold:#C9A227;--silver:#888;--bronze:#A0522D
+}
+body{font-family:var(--font-sans);color:var(--color-text-primary);font-size:13px}
+.page{display:none}.page.active{display:block}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:stretch;border-bottom:2.5px solid var(--sg-dark);margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:10px;padding:8px 18px 10px;background:var(--sg);border-radius:6px 6px 0 0;margin-bottom:-2.5px}
+.navlinks{display:flex;gap:2px;padding:0 6px;align-items:flex-end;flex-wrap:wrap}
+.navbtn{font-size:11px;padding:6px 13px;border:none;background:none;cursor:pointer;color:var(--color-text-secondary);border-bottom:2.5px solid transparent;margin-bottom:-2.5px;border-radius:4px 4px 0 0;white-space:nowrap}
+.navbtn.active{background:var(--sg-light);color:var(--sg-dark);border-color:var(--sg);font-weight:500}
+.navbtn:hover:not(.active){background:var(--color-background-secondary)}
+
+/* ── TC BAR ── */
+.tc-bar{background:var(--sg-light);border:.5px solid var(--sg);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--sg-dark);display:flex;gap:12px;align-items:center;margin-bottom:.9rem;flex-wrap:wrap}
+.tc-bar strong{font-weight:600}
+
+/* ── KPI CARDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:1rem}
+.kpi{background:var(--color-background-secondary);border-radius:8px;padding:.75rem .9rem;border-left:3px solid var(--sg)}
+.kpi.util{border-left-color:var(--sg-dark)}.kpi.amber{border-left-color:var(--sg-accent)}.kpi.red{border-left-color:#C00000}
+.kpi-lbl{font-size:10px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.kpi-val{font-size:19px;font-weight:500}
+.kpi-sub{font-size:10px;color:var(--color-text-tertiary);margin-top:3px}
+
+/* ── SECTION HEADER ── */
+.sec{font-size:11px;font-weight:500;color:var(--sg-dark);text-transform:uppercase;letter-spacing:.07em;border-bottom:1.5px solid var(--sg);padding-bottom:4px;margin-bottom:.8rem;margin-top:1.1rem}
+
+/* ── LAYOUT ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:10px;padding:.8rem}
+.card-t{font-size:11px;font-weight:500;color:var(--sg-dark);margin-bottom:.65rem;text-transform:uppercase;letter-spacing:.05em}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;margin-bottom:.65rem;flex-wrap:wrap}
+.tab{font-size:11px;padding:3px 11px;border:.5px solid var(--sg);border-radius:20px;background:none;cursor:pointer;color:var(--sg-dark)}
+.tab.active{background:var(--sg);color:#fff;border-color:var(--sg)}
+.tab:hover:not(.active){background:var(--sg-light)}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{font-size:10px;font-weight:500;color:var(--sg-dark);text-align:right;padding:5px 8px;border-bottom:.5px solid var(--sg);white-space:nowrap;background:var(--sg-light);position:sticky;top:0;z-index:1}
+th.tl{text-align:left}
+td{padding:5px 8px;border-bottom:.5px solid var(--color-border-tertiary);text-align:right;white-space:nowrap}
+td.tl{text-align:left}
+tr:hover td{background:var(--sg-light)}
+tr.tot td{font-weight:500;background:var(--sg-light);color:var(--sg-dark);border-top:.5px solid var(--sg)}
+
+/* ── MEDALS & SEMAPHORE ── */
+.medal{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;font-size:10px;font-weight:600;color:#fff}
+.m1{background:var(--gold)}.m2{background:var(--silver)}.m3{background:var(--bronze)}.mn{background:var(--color-border-secondary);color:var(--color-text-secondary)}
+.sem{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.neg-val{color:#C00000;font-weight:500}
+
+/* ── CHARTS ── */
+.chart-wrap{position:relative;width:100%}
+
+/* ── VENDEDOR PAGE ── */
+.vkpi-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:.9rem}
+.vkpi{background:var(--sg-light);border:.5px solid var(--sg);border-radius:7px;padding:.55rem .7rem;text-align:center}
+.vkpi-val{font-size:15px;font-weight:500;color:var(--sg-dark)}
+.vkpi-lbl{font-size:10px;color:var(--sg-dark);margin-top:2px;opacity:.75}
+
+select{font-size:12px;padding:5px 10px;border:.5px solid var(--sg);border-radius:7px;background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer}
+.footer{font-size:10px;color:var(--color-text-tertiary);text-align:right;margin-top:.9rem;padding-top:.4rem;border-top:.5px solid var(--color-border-tertiary)}
+</style>
+
+<div>
+<!-- ══════════ TOPBAR ══════════ -->
+<div class="topbar">
+  <div class="logo-area">
+    <!-- Logo Siga SVG nítido -->
+    <svg width="52" height="38" viewBox="0 0 52 38" xmlns="http://www.w3.org/2000/svg">
+      <!-- fondo verde redondeado -->
+      <rect width="52" height="38" rx="4" fill="#2DB84B"/>
+      <!-- flecha chevron > -->
+      <polyline points="8,10 16,19 8,28" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Si -->
+      <text x="19" y="24" font-family="Arial Black, Arial" font-weight="900" font-size="15" fill="#fff" letter-spacing="-0.5">Si</text>
+      <!-- ga en peso más ligero -->
+      <text x="34" y="24" font-family="Arial, sans-serif" font-weight="400" font-size="13" fill="#fff">ga</text>
+      <!-- turismo -->
+      <text x="19" y="33" font-family="Arial, sans-serif" font-weight="300" font-size="6.5" fill="#ffffffcc" letter-spacing="1">turismo</text>
+    </svg>
+
+    <!-- Icono avion + texto "Aéreos" estilo segundo logo -->
+    <div style="display:flex;align-items:center;gap:0;margin-left:6px">
+      <svg width="68" height="28" viewBox="0 0 68 28" xmlns="http://www.w3.org/2000/svg">
+        <rect width="68" height="28" rx="4" fill="#2DB84B"/>
+        <!-- avión -->
+        <g transform="translate(7,14) rotate(-30)">
+          <path d="M0,0 L10,-3 L12,0 L10,3 Z" fill="#fff"/>
+          <path d="M4,-1 L7,-5 L9,-5 L7,-1 Z" fill="#fff"/>
+          <path d="M4,1 L7,5 L9,5 L7,1 Z" fill="#fff"/>
+          <rect x="2" y="-0.5" width="4" height="1" fill="#fff"/>
+        </g>
+        <text x="26" y="18" font-family="Arial, sans-serif" font-weight="600" font-size="11" fill="#fff">Aéreos</text>
+        <!-- flecha dropdown -->
+        <polyline points="56,10 60,15 64,10" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="navlinks">
+    <button class="navbtn active" onclick="goPage('general',this)">General</button>
+    <button class="navbtn" onclick="goPage('ranking',this)">Ranking</button>
+    <button class="navbtn" onclick="goPage('mensual',this)">Evolución mensual</button>
+    <button class="navbtn" onclick="goPage('clientes',this)">Clientes</button>
+    <button class="navbtn" onclick="goPage('vendedor',this)">Por vendedor</button>
+    <button class="navbtn" onclick="goPage('alertas',this)">Alertas</button>
+  </div>
+</div>
+
+<!-- TC BAR -->
+<div class="tc-bar">
+  <strong>TC aplicado (PES→USD):</strong>
+  <span>Ene: 1.473,51</span><span>Feb: 1.443,63</span><span>Mar: 1.419,62</span><span>Abr: 1.400,00</span>
+  <span style="margin-left:8px;opacity:.7;font-style:italic">9 vendedores activos · valores en USD</span>
+</div>
+
+<!-- ══════════ GENERAL ══════════ -->
+<div class="page active" id="page-general">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-lbl">Files activos</div><div class="kpi-val">3.393</div><div class="kpi-sub">9 vendedores</div></div>
+    <div class="kpi"><div class="kpi-lbl">Pax totales</div><div class="kpi-val">8.401</div></div>
+    <div class="kpi util"><div class="kpi-lbl">Ventas USD</div><div class="kpi-val">5.712.716</div><div class="kpi-sub">Total unificado</div></div>
+    <div class="kpi util"><div class="kpi-lbl">Utilidad USD</div><div class="kpi-val">135.677</div><div class="kpi-sub">Promedio 2,38%</div></div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi amber"><div class="kpi-lbl">Enero</div><div class="kpi-val">2.052.615</div><div class="kpi-sub">1.112 files · util 49.629</div></div>
+    <div class="kpi amber"><div class="kpi-lbl">Febrero</div><div class="kpi-val">1.721.435</div><div class="kpi-sub">1.061 files · util 41.808</div></div>
+    <div class="kpi amber"><div class="kpi-lbl">Marzo</div><div class="kpi-val">1.596.336</div><div class="kpi-sub">1.006 files · util 37.352</div></div>
+    <div class="kpi amber"><div class="kpi-lbl">Abril</div><div class="kpi-val">342.329</div><div class="kpi-sub">214 files · util 6.888</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-t">Ventas y utilidad por mes de alta</div>
+      <div class="chart-wrap" style="height:205px"><canvas id="barGen" role="img" aria-label="Ventas mensuales USD">Ventas mensuales.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-t">Resumen consolidado</div>
+      <table><thead><tr><th class="tl">Mes</th><th>Files</th><th>Pax</th><th>Ventas USD</th><th>Utilidad</th><th>% Util</th></tr></thead>
+      <tbody>
+        <tr><td class="tl">Enero</td><td>1.112</td><td>2.940</td><td>2.052.615</td><td>49.629</td><td>2,42%</td></tr>
+        <tr><td class="tl">Febrero</td><td>1.061</td><td>2.687</td><td>1.721.435</td><td>41.808</td><td>2,43%</td></tr>
+        <tr><td class="tl">Marzo</td><td>1.006</td><td>2.343</td><td>1.596.336</td><td>37.352</td><td>2,34%</td></tr>
+        <tr><td class="tl">Abril</td><td>214</td><td>431</td><td>342.329</td><td>6.888</td><td>2,01%</td></tr>
+        <tr class="tot"><td class="tl">TOTAL</td><td>3.393</td><td>8.401</td><td>5.712.716</td><td>135.677</td><td>2,38%</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RANKING ══════════ -->
+<div class="page" id="page-ranking">
+  <div class="tabs" id="rankTabs">
+    <button class="tab active" onclick="setRank('imp',this)">Por ventas</button>
+    <button class="tab" onclick="setRank('util',this)">Por utilidad</button>
+    <button class="tab" onclick="setRank('pct',this)">Por % utilidad</button>
+    <button class="tab" onclick="setRank('files',this)">Por files</button>
+    <button class="tab" onclick="setRank('pax',this)">Por pax</button>
+  </div>
+  <div class="chart-wrap" style="height:280px;margin-bottom:.9rem"><canvas id="rankChart" role="img" aria-label="Ranking vendedores">Ranking.</canvas></div>
+  <div id="rankTable"></div>
+</div>
+
+<!-- ══════════ MENSUAL ══════════ -->
+<div class="page" id="page-mensual">
+  <div class="tabs" id="mesTabs">
+    <button class="tab active" onclick="setMes('alta',this)">Fecha de alta</button>
+    <button class="tab" onclick="setMes('in',this)">Fecha de ingreso</button>
+  </div>
+  <div class="chart-wrap" style="height:260px;margin-bottom:.75rem"><canvas id="mesChart" role="img" aria-label="Evolución mensual">Evolución mensual.</canvas></div>
+  <div id="mesTable"></div>
+</div>
+
+<!-- ══════════ CLIENTES ══════════ -->
+<div class="page" id="page-clientes">
+  <div class="chart-wrap" style="height:310px;margin-bottom:.75rem"><canvas id="cliChart" role="img" aria-label="Top clientes">Top clientes.</canvas></div>
+  <div id="cliTable"></div>
+</div>
+
+<!-- ══════════ VENDEDOR ══════════ -->
+<div class="page" id="page-vendedor">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;gap:10px;flex-wrap:wrap">
+    <div class="sec" style="margin:0;border:none">Detalle por vendedor</div>
+    <select id="vendSel" onchange="renderVend()"></select>
+  </div>
+  <div class="vkpi-row" id="vendKpis"></div>
+  <div class="tabs" id="vendMesTabs">
+    <button class="tab active" onclick="setVM('alta',this)">Fecha de alta</button>
+    <button class="tab" onclick="setVM('in',this)">Fecha de ingreso</button>
+  </div>
+  <div class="two-col" style="margin-bottom:.75rem">
+    <div class="card">
+      <div class="card-t" id="vendChartT">Evolución mensual · fecha de alta</div>
+      <div class="chart-wrap" style="height:195px"><canvas id="vendChart" role="img" aria-label="Evolución vendedor">Evolución.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-t">Top 3 clientes</div>
+      <div id="vendCli"></div>
+    </div>
+  </div>
+  <div id="vendMesTable"></div>
+</div>
+
+<!-- ══════════ ALERTAS ══════════ -->
+<div class="page" id="page-alertas">
+  <div class="sec">Files con utilidad negativa</div>
+  <div class="tbl-wrap" style="margin-bottom:1.25rem">
+    <table><thead><tr><th class="tl">File</th><th class="tl">Vendedor</th><th class="tl">Cliente</th><th>Orig.</th><th>Fecha alta</th><th>Pax</th><th>Ventas USD</th><th>Utilidad USD</th></tr></thead>
+    <tbody id="negBody"></tbody></table>
+  </div>
+  <div class="sec">Semáforo de utilidad</div>
+  <div id="semTable"></div>
+</div>
+
+<div class="footer">Siga Turismo S.A. · Ene–Abr 2026 · En USD · TC: Ene 1.473,51 / Feb 1.443,63 / Mar 1.419,62 / Abr 1.400,00</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ── DATA ── */
+const RANK_IMP=[{files:694,pax:1808,imp:1416650,util:30755,pct:2.17,Vendedor:"ANA PAULA PUCHETA",rank:1},{files:633,pax:1251,imp:811232,util:17072,pct:2.1,Vendedor:"VICTORIA GRAFFIGNA",rank:2},{files:485,pax:1026,imp:724305,util:16239,pct:2.24,Vendedor:"ANA LOPEZ",rank:3},{files:401,pax:986,imp:710279,util:19636,pct:2.76,Vendedor:"LUCIANA MIGLIORE",rank:4},{files:447,pax:968,imp:667505,util:15575,pct:2.33,Vendedor:"MARIELA NICOLEA",rank:5},{files:364,pax:809,imp:631210,util:13216,pct:2.09,Vendedor:"ANGIE DIAZ",rank:6},{files:308,pax:766,imp:542244,util:12973,pct:2.39,Vendedor:"ANAHID RAMOS",rank:7},{files:50,pax:768,imp:194265,util:9823,pct:5.06,Vendedor:"SOLEDAD NESCI",rank:8},{files:11,pax:19,imp:15027,util:388,pct:2.59,Vendedor:"EMILIANO MORALES",rank:9}];
+const RANK_PCT=[{files:50,pax:768,imp:194265,util:9823,pct:5.06,Vendedor:"SOLEDAD NESCI",rank:1},{files:401,pax:986,imp:710279,util:19636,pct:2.76,Vendedor:"LUCIANA MIGLIORE",rank:2},{files:11,pax:19,imp:15027,util:388,pct:2.59,Vendedor:"EMILIANO MORALES",rank:3},{files:308,pax:766,imp:542244,util:12973,pct:2.39,Vendedor:"ANAHID RAMOS",rank:4},{files:447,pax:968,imp:667505,util:15575,pct:2.33,Vendedor:"MARIELA NICOLEA",rank:5},{files:485,pax:1026,imp:724305,util:16239,pct:2.24,Vendedor:"ANA LOPEZ",rank:6},{files:694,pax:1808,imp:1416650,util:30755,pct:2.17,Vendedor:"ANA PAULA PUCHETA",rank:7},{files:633,pax:1251,imp:811232,util:17072,pct:2.1,Vendedor:"VICTORIA GRAFFIGNA",rank:8},{files:364,pax:809,imp:631210,util:13216,pct:2.09,Vendedor:"ANGIE DIAZ",rank:9}];
+const MES_ALTA=[{files:1112,pax:2940,imp:2052615,util:49629,pct:2.42,k:"2026-01"},{files:1061,pax:2687,imp:1721435,util:41808,pct:2.43,k:"2026-02"},{files:1006,pax:2343,imp:1596336,util:37352,pct:2.34,k:"2026-03"},{files:214,pax:431,imp:342329,util:6888,pct:2.01,k:"2026-04"}];
+const MES_IN=[{files:247,pax:576,imp:351646,util:9994,pct:2.84,k:"2026-01"},{files:459,pax:985,imp:604846,util:14858,pct:2.46,k:"2026-02"},{files:751,pax:1616,imp:931932,util:23132,pct:2.48,k:"2026-03"},{files:623,pax:1322,imp:927064,util:20585,pct:2.22,k:"2026-04"},{files:461,pax:1143,imp:850172,util:20309,pct:2.39,k:"2026-05"},{files:269,pax:739,imp:627435,util:13333,pct:2.13,k:"2026-06"},{files:189,pax:604,imp:542258,util:10135,pct:1.87,k:"2026-07"},{files:141,pax:446,imp:343123,util:8201,pct:2.39,k:"2026-08"},{files:107,pax:424,imp:236545,util:6550,pct:2.77,k:"2026-09"},{files:66,pax:263,imp:119578,util:3048,pct:2.55,k:"2026-10"},{files:34,pax:104,imp:62237,util:1791,pct:2.88,k:"2026-11"},{files:28,pax:98,imp:59148,util:1423,pct:2.41,k:"2026-12"},{files:16,pax:76,imp:54309,util:2268,pct:4.18,k:"2027-01"},{files:2,pax:5,imp:2423,util:50,pct:2.06,k:"2027-02"}];
+const CLI=[{files:295,pax:531,imp:315371,util:6341,pct:2.01,c:"TRINITY VIAJES"},{files:76,pax:249,imp:307955,util:5078,pct:1.65,c:"AMOAC TURISMO"},{files:160,pax:397,imp:296691,util:6817,pct:2.3,c:"EMIRATOS VIAJES"},{files:156,pax:341,imp:229775,util:5083,pct:2.21,c:"ANTARES"},{files:101,pax:284,imp:225834,util:5300,pct:2.35,c:"ANDUMA VIAJES"},{files:204,pax:344,imp:223265,util:4044,pct:1.81,c:"BEGGIA TURISMO"},{files:87,pax:329,imp:211997,util:5983,pct:2.82,c:"RES TEC"},{files:154,pax:289,imp:207260,util:4211,pct:2.03,c:"GF TRAVEL"},{files:67,pax:169,imp:146628,util:3054,pct:2.08,c:"WOMEN GROUP"},{files:35,pax:415,imp:129078,util:5615,pct:4.35,c:"MAXIMO DESTINO"},{files:77,pax:185,imp:126515,util:3309,pct:2.62,c:"HELSINKI VIAJES"},{files:92,pax:222,imp:123146,util:2573,pct:2.09,c:"TRAVEL BOUTIQUE"}];
+const VEND_MES={
+"ANA LOPEZ":[{k:"2026-01",files:111,pax:245,imp:146301,util:3533,pct:2.42},{k:"2026-02",files:157,pax:363,imp:237573,util:5826,pct:2.45},{k:"2026-03",files:178,pax:356,imp:259377,util:5510,pct:2.12},{k:"2026-04",files:39,pax:62,imp:81054,util:1370,pct:1.69}],
+"ANA PAULA PUCHETA":[{k:"2026-01",files:218,pax:631,imp:495496,util:11234,pct:2.27},{k:"2026-02",files:220,pax:542,imp:403434,util:8715,pct:2.16},{k:"2026-03",files:203,pax:523,imp:427484,util:8903,pct:2.08},{k:"2026-04",files:53,pax:112,imp:90238,util:1903,pct:2.11}],
+"ANAHID RAMOS":[{k:"2026-01",files:77,pax:175,imp:128424,util:3000,pct:2.34},{k:"2026-02",files:119,pax:298,imp:220867,util:5196,pct:2.35},{k:"2026-03",files:93,pax:248,imp:158016,util:3923,pct:2.48},{k:"2026-04",files:19,pax:45,imp:34938,util:855,pct:2.45}],
+"ANGIE DIAZ":[{k:"2026-01",files:159,pax:359,imp:316746,util:6536,pct:2.06},{k:"2026-02",files:122,pax:268,imp:194644,util:3797,pct:1.95},{k:"2026-03",files:64,pax:151,imp:94967,util:2494,pct:2.63},{k:"2026-04",files:19,pax:31,imp:24852,util:388,pct:1.56}],
+"EMILIANO MORALES":[{k:"2026-01",files:3,pax:4,imp:5823,util:136,pct:2.33},{k:"2026-02",files:6,pax:12,imp:8206,util:238,pct:2.9},{k:"2026-03",files:2,pax:3,imp:998,util:14,pct:1.43}],
+"LUCIANA MIGLIORE":[{k:"2026-01",files:143,pax:351,imp:258969,util:6747,pct:2.61},{k:"2026-02",files:132,pax:332,imp:228741,util:6806,pct:2.98},{k:"2026-03",files:113,pax:267,imp:200627,util:5511,pct:2.75},{k:"2026-04",files:13,pax:36,imp:21942,util:571,pct:2.6}],
+"MARIELA NICOLEA":[{k:"2026-01",files:147,pax:360,imp:276340,util:6621,pct:2.4},{k:"2026-02",files:127,pax:267,imp:176666,util:3979,pct:2.25},{k:"2026-03",files:143,pax:288,imp:176617,util:4280,pct:2.42},{k:"2026-04",files:30,pax:53,imp:37882,util:695,pct:1.83}],
+"SOLEDAD NESCI":[{k:"2026-01",files:23,pax:313,imp:84411,util:4257,pct:5.04},{k:"2026-02",files:14,pax:292,imp:64536,util:3064,pct:4.75},{k:"2026-03",files:11,pax:137,imp:42698,util:2410,pct:5.64},{k:"2026-04",files:2,pax:26,imp:2620,util:93,pct:3.53}],
+"VICTORIA GRAFFIGNA":[{k:"2026-01",files:231,pax:502,imp:340106,util:7565,pct:2.22},{k:"2026-02",files:164,pax:313,imp:186769,util:4186,pct:2.24},{k:"2026-03",files:199,pax:370,imp:235553,util:4307,pct:1.83},{k:"2026-04",files:39,pax:66,imp:48804,util:1014,pct:2.08}]
+};
+const VEND_MES_IN={
+"ANA LOPEZ":[{k:"2026-01",files:28,imp:27223,util:599,pct:2.2},{k:"2026-02",files:51,imp:61587,util:1736,pct:2.82},{k:"2026-03",files:115,imp:113651,util:2924,pct:2.57},{k:"2026-04",files:88,imp:115117,util:2361,pct:2.05},{k:"2026-05",files:74,imp:150247,util:3341,pct:2.22},{k:"2026-06",files:37,imp:72891,util:1379,pct:1.89},{k:"2026-07",files:29,imp:72598,util:1411,pct:1.94},{k:"2026-08",files:26,imp:48313,util:984,pct:2.04},{k:"2026-09",files:19,imp:40794,util:901,pct:2.21},{k:"2026-10",files:8,imp:8098,util:210,pct:2.6},{k:"2026-11",files:3,imp:6098,util:167,pct:2.74},{k:"2026-12",files:4,imp:3826,util:130,pct:3.4},{k:"2027-01",files:1,imp:1438,util:45,pct:3.1},{k:"2027-02",files:2,imp:2423,util:50,pct:2.06}],
+"ANA PAULA PUCHETA":[{k:"2026-01",files:34,imp:49098,util:1028,pct:2.09},{k:"2026-02",files:79,imp:134037,util:3206,pct:2.39},{k:"2026-03",files:143,imp:221874,util:4682,pct:2.11},{k:"2026-04",files:137,imp:233635,util:4566,pct:1.95},{k:"2026-05",files:100,imp:210951,util:5518,pct:2.62},{k:"2026-06",files:63,imp:207029,util:3302,pct:1.6},{k:"2026-07",files:44,imp:114223,util:2246,pct:1.97},{k:"2026-08",files:40,imp:128099,util:3242,pct:2.53},{k:"2026-09",files:21,imp:38302,util:849,pct:2.22},{k:"2026-10",files:17,imp:29498,util:785,pct:2.66},{k:"2026-11",files:4,imp:9556,util:240,pct:2.51},{k:"2026-12",files:7,imp:20980,util:636,pct:3.03},{k:"2027-01",files:5,imp:19369,util:455,pct:2.35}],
+"ANAHID RAMOS":[{k:"2026-01",files:9,imp:3384,util:67,pct:1.97},{k:"2026-02",files:43,imp:32832,util:790,pct:2.41},{k:"2026-03",files:53,imp:81940,util:2003,pct:2.44},{k:"2026-04",files:62,imp:100475,util:2513,pct:2.5},{k:"2026-05",files:58,imp:109696,util:2361,pct:2.15},{k:"2026-06",files:25,imp:63368,util:1406,pct:2.22},{k:"2026-07",files:14,imp:39741,util:975,pct:2.45},{k:"2026-08",files:18,imp:34947,util:974,pct:2.79},{k:"2026-09",files:12,imp:45350,util:962,pct:2.12},{k:"2026-10",files:6,imp:14537,util:437,pct:3.0},{k:"2026-11",files:5,imp:13258,util:359,pct:2.71},{k:"2026-12",files:2,imp:1258,util:83,pct:6.61},{k:"2027-01",files:1,imp:1457,util:44,pct:3.02}],
+"ANGIE DIAZ":[{k:"2026-01",files:44,imp:56174,util:1204,pct:2.14},{k:"2026-02",files:57,imp:68684,util:1292,pct:1.88},{k:"2026-03",files:90,imp:120002,util:3031,pct:2.53},{k:"2026-04",files:52,imp:83247,util:2020,pct:2.43},{k:"2026-05",files:41,imp:70902,util:1226,pct:1.73},{k:"2026-06",files:18,imp:42444,util:930,pct:2.19},{k:"2026-07",files:22,imp:103508,util:1539,pct:1.49},{k:"2026-08",files:10,imp:31825,util:512,pct:1.61},{k:"2026-09",files:14,imp:25165,util:645,pct:2.56},{k:"2026-10",files:6,imp:7217,util:302,pct:4.19},{k:"2026-11",files:6,imp:11837,util:360,pct:3.04},{k:"2026-12",files:3,imp:8861,util:134,pct:1.52},{k:"2027-01",files:1,imp:1346,util:20,pct:1.49}],
+"EMILIANO MORALES":[{k:"2026-02",files:1,imp:248,util:1,pct:0.25},{k:"2026-03",files:4,imp:5047,util:104,pct:2.05},{k:"2026-04",files:3,imp:2571,util:72,pct:2.81},{k:"2026-05",files:2,imp:3628,util:129,pct:3.57},{k:"2026-07",files:1,imp:3531,util:83,pct:2.34}],
+"LUCIANA MIGLIORE":[{k:"2026-01",files:33,imp:43241,util:1531,pct:3.54},{k:"2026-02",files:58,imp:80361,util:1970,pct:2.45},{k:"2026-03",files:87,imp:125046,util:3904,pct:3.12},{k:"2026-04",files:66,imp:121706,util:3645,pct:3.0},{k:"2026-05",files:49,imp:80761,util:2127,pct:2.63},{k:"2026-06",files:38,imp:77608,util:2420,pct:3.12},{k:"2026-07",files:28,imp:77618,util:1256,pct:1.62},{k:"2026-08",files:19,imp:41555,util:1161,pct:2.79},{k:"2026-09",files:6,imp:18203,util:583,pct:3.2},{k:"2026-10",files:8,imp:17596,util:317,pct:1.8},{k:"2026-11",files:3,imp:4238,util:141,pct:3.33},{k:"2026-12",files:3,imp:8274,util:180,pct:2.18},{k:"2027-01",files:3,imp:14072,util:401,pct:2.85}],
+"MARIELA NICOLEA":[{k:"2026-01",files:32,imp:58657,util:1459,pct:2.49},{k:"2026-02",files:66,imp:71053,util:1675,pct:2.36},{k:"2026-03",files:111,imp:122462,util:3076,pct:2.51},{k:"2026-04",files:75,imp:74209,util:1713,pct:2.31},{k:"2026-05",files:54,imp:96244,util:2598,pct:2.7},{k:"2026-06",files:37,imp:77627,util:1409,pct:1.81},{k:"2026-07",files:26,imp:79039,util:1643,pct:2.08},{k:"2026-08",files:14,imp:24123,util:486,pct:2.02},{k:"2026-09",files:10,imp:21224,util:578,pct:2.72},{k:"2026-10",files:9,imp:18149,util:347,pct:1.91},{k:"2026-11",files:4,imp:5904,util:84,pct:1.43},{k:"2026-12",files:6,imp:7005,util:166,pct:2.37},{k:"2027-01",files:3,imp:11807,util:340,pct:2.88}],
+"SOLEDAD NESCI":[{k:"2026-01",files:13,imp:60837,util:2933,pct:4.82},{k:"2026-02",files:8,imp:61239,util:2391,pct:3.9},{k:"2026-03",files:8,imp:18523,util:592,pct:3.19},{k:"2026-04",files:3,imp:24763,util:530,pct:2.14},{k:"2026-05",files:4,imp:8047,util:624,pct:7.76},{k:"2026-06",files:2,imp:1668,util:453,pct:27.18},{k:"2026-07",files:2,imp:2872,util:130,pct:4.53},{k:"2026-09",files:5,imp:10181,util:1048,pct:10.3},{k:"2026-10",files:4,imp:5220,util:220,pct:4.21},{k:"2027-01",files:1,imp:913,util:902,pct:98.81}],
+"VICTORIA GRAFFIGNA":[{k:"2026-01",files:54,imp:53032,util:1174,pct:2.21},{k:"2026-02",files:96,imp:94803,util:1799,pct:1.9},{k:"2026-03",files:140,imp:123388,util:2818,pct:2.28},{k:"2026-04",files:137,imp:171341,util:3164,pct:1.85},{k:"2026-05",files:79,imp:119694,util:2383,pct:1.99},{k:"2026-06",files:49,imp:84799,util:2034,pct:2.4},{k:"2026-07",files:23,imp:49127,util:853,pct:1.74},{k:"2026-08",files:14,imp:34260,util:841,pct:2.46},{k:"2026-09",files:20,imp:37327,util:984,pct:2.63},{k:"2026-10",files:8,imp:19263,util:430,pct:2.23},{k:"2026-11",files:9,imp:11346,util:439,pct:3.86},{k:"2026-12",files:3,imp:8945,util:94,pct:1.05},{k:"2027-01",files:1,imp:3908,util:60,pct:1.54}]
+};
+const TOP_CV={"ANA LOPEZ":[{c:"EMIRATOS VIAJES",files:41,imp:79959,util:1966},{c:"BEGGIA TURISMO",files:44,imp:73774,util:1481},{c:"TRINITY VIAJES",files:56,imp:59004,util:971}],"ANA PAULA PUCHETA":[{c:"AMOAC TURISMO",files:25,imp:168196,util:2496},{c:"RES TEC",files:34,imp:96762,util:2381},{c:"ANTARES",files:42,imp:68223,util:1153}],"ANAHID RAMOS":[{c:"TRAVEL MODE",files:36,imp:84839,util:2252},{c:"STONTUR",files:24,imp:39414,util:756},{c:"VILLAFAÑE VIAJES",files:8,imp:33969,util:644}],"ANGIE DIAZ":[{c:"BEGGIA TURISMO",files:35,imp:36920,util:541},{c:"ANTARES",files:19,imp:31437,util:925},{c:"ASSOCIATED",files:5,imp:27969,util:323}],"EMILIANO MORALES":[{c:"TRINITY VIAJES",files:1,imp:3531,util:83},{c:"ANDUMA VIAJES",files:1,imp:3311,util:88},{c:"TOSCANA VIAJES",files:1,imp:2043,util:53}],"LUCIANA MIGLIORE":[{c:"TRINITY VIAJES",files:23,imp:38245,util:1359},{c:"RES TEC",files:15,imp:37957,util:1161},{c:"SOUBERAN VIAJES",files:16,imp:37062,util:962}],"MARIELA NICOLEA":[{c:"TRINITY VIAJES",files:46,imp:73754,util:1252},{c:"EMIRATOS VIAJES",files:27,imp:59984,util:1592},{c:"GF TRAVEL",files:28,imp:48447,util:998}],"SOLEDAD NESCI":[{c:"MAXIMO DESTINO",files:31,imp:126231,util:5589},{c:"TIUL VIAJES",files:2,imp:24189,util:1200},{c:"TRINITY VIAJES",files:1,imp:21315,util:390}],"VICTORIA GRAFFIGNA":[{c:"ANDUMA VIAJES",files:19,imp:56673,util:1055},{c:"TRINITY VIAJES",files:79,imp:53759,util:866},{c:"EMIRATOS VIAJES",files:29,imp:53748,util:1253}]};
+const NEG=[{cod:"207376/TN",vend:"MARIELA NICOLEA",cli:"GINEBRA VIAJES",mon:"PES",alta:"24/02/26",pax:1,imp:1,util:0},{cod:"205696/TD",vend:"ANA PAULA PUCHETA",cli:"ANTARES",mon:"USD",alta:"26/01/26",pax:2,imp:4131,util:-149},{cod:"206822/TD",vend:"ANGIE DIAZ",cli:"ALTIS VIAJES",mon:"USD",alta:"12/02/26",pax:1,imp:290,util:-200},{cod:"207906/TD",vend:"ANA PAULA PUCHETA",cli:"ANDUMA VIAJES",mon:"USD",alta:"05/03/26",pax:1,imp:294,util:-383},{cod:"208351/TD",vend:"ANAHID RAMOS",cli:"DUPONT VIAJES",mon:"USD",alta:"13/03/26",pax:1,imp:1431,util:-92},{cod:"208401/TD",vend:"VICTORIA GRAFFIGNA",cli:"TOURKESS TRAVEL",mon:"USD",alta:"14/03/26",pax:2,imp:1145,util:-152},{cod:"208745/TD",vend:"ANA PAULA PUCHETA",cli:"TRAVELER VIBES",mon:"USD",alta:"20/03/26",pax:2,imp:425,util:-60}];
+const VENDORS=["ANA LOPEZ","ANA PAULA PUCHETA","ANAHID RAMOS","ANGIE DIAZ","EMILIANO MORALES","LUCIANA MIGLIORE","MARIELA NICOLEA","SOLEDAD NESCI","VICTORIA GRAFFIGNA"];
+const ML={'2026-01':'Ene','2026-02':'Feb','2026-03':'Mar','2026-04':'Abr','2026-05':'May','2026-06':'Jun','2026-07':'Jul','2026-08':'Ago','2026-09':'Sep','2026-10':'Oct','2026-11':'Nov','2026-12':'Dic','2027-01':'Ene27','2027-02':'Feb27'};
+
+/* ── Paleta Siga ── */
+const SG='#2DB84B', SGD='#1E8A35', SGS='#86D49B', AMBER='#F5A623', RED='#C00000';
+
+const fn=v=>Math.round(v).toLocaleString('es-AR');
+const fp=v=>v.toFixed(2)+'%';
+
+let charts={};
+function goPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');btn.classList.add('active');}
+function medal(r){return r===1?`<span class="medal m1">1</span>`:r===2?`<span class="medal m2">2</span>`:r===3?`<span class="medal m3">3</span>`:`<span class="medal mn">${r}</span>`;}
+function sem(pct){if(pct>=4)return{bg:'#E8F9ED',tx:'#1E8A35',lbl:'Alto'};if(pct>=2.5)return{bg:'#FFF9E6',tx:'#7A5200',lbl:'Medio'};if(pct>=1)return{bg:'#FEF3E2',tx:'#7A3B00',lbl:'Bajo'};return{bg:'#FCEBEB',tx:'#791F1F',lbl:'Crítico'};}
+
+/* GENERAL chart */
+(()=>{
+  charts.gen=new Chart(document.getElementById('barGen'),{type:'bar',
+    data:{labels:MES_ALTA.map(m=>ML[m.k]),datasets:[
+      {label:'Ventas',data:MES_ALTA.map(m=>m.imp),backgroundColor:SG,borderRadius:5},
+      {label:'Utilidad',data:MES_ALTA.map(m=>m.util),backgroundColor:SGD,borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fn(c.raw)} USD`}}},
+      scales:{x:{ticks:{font:{size:11}},grid:{display:false}},y:{ticks:{callback:v=>fn(v/1000)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}}}}});
+})();
+
+/* RANKING */
+let rankMode='imp';
+function setRank(m,btn){rankMode=m;document.querySelectorAll('#rankTabs .tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRank();}
+function renderRank(){
+  let data,gv,lbl,fv;
+  if(rankMode==='imp'){data=RANK_IMP;gv=r=>r.imp;lbl='Ventas';fv=fn;}
+  else if(rankMode==='util'){data=[...RANK_IMP].sort((a,b)=>b.util-a.util).map((r,i)=>({...r,rank:i+1}));gv=r=>r.util;lbl='Utilidad';fv=fn;}
+  else if(rankMode==='pct'){data=RANK_PCT;gv=r=>r.pct;lbl='% Util';fv=fp;}
+  else if(rankMode==='files'){data=[...RANK_IMP].sort((a,b)=>b.files-a.files).map((r,i)=>({...r,rank:i+1}));gv=r=>r.files;lbl='Files';fv=fn;}
+  else{data=[...RANK_IMP].sort((a,b)=>b.pax-a.pax).map((r,i)=>({...r,rank:i+1}));gv=r=>r.pax;lbl='Pax';fv=fn;}
+  const clrs=data.map((r,i)=>i===0?'#C9A227':i===1?'#9E9E9E':i===2?'#A0522D':SG);
+  if(charts.rank)charts.rank.destroy();
+  charts.rank=new Chart(document.getElementById('rankChart'),{type:'bar',indexAxis:'y',
+    data:{labels:data.map(r=>r.Vendedor.split(' ')[0]),datasets:[{label:lbl,data:data.map(gv),backgroundColor:clrs,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fv(c.raw)}`}}},
+      scales:{x:{ticks:{callback:v=>fv(v),font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}},y:{ticks:{font:{size:11}},grid:{display:false}}}}});
+  document.getElementById('rankTable').innerHTML=`<table><thead><tr><th style="text-align:center">Pos.</th><th class="tl">Vendedor</th><th>Files</th><th>Pax</th><th>Ventas USD</th><th>Utilidad USD</th><th>% Util</th><th>Semáforo</th></tr></thead><tbody>${
+    data.map(r=>{const s=sem(r.pct);return`<tr><td style="text-align:center">${medal(r.rank)}</td><td class="tl" style="font-weight:500">${r.Vendedor}</td><td>${fn(r.files)}</td><td>${fn(r.pax)}</td><td>${fn(r.imp)}</td><td>${fn(r.util)}</td><td>${fp(r.pct)}</td><td><span class="sem" style="background:${s.bg};color:${s.tx}">${s.lbl}</span></td></tr>`;}).join('')
+  }</tbody></table>`;
+}
+renderRank();
+
+/* MENSUAL */
+let mesMode='alta';
+function setMes(m,btn){mesMode=m;document.querySelectorAll('#mesTabs .tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMes();}
+function renderMes(){
+  const d=mesMode==='alta'?MES_ALTA:MES_IN;
+  if(charts.mes)charts.mes.destroy();
+  charts.mes=new Chart(document.getElementById('mesChart'),{type:'bar',
+    data:{labels:d.map(m=>ML[m.k]||m.k),datasets:[
+      {label:'Ventas',data:d.map(m=>m.imp),backgroundColor:SG,borderRadius:3,yAxisID:'y'},
+      {label:'Utilidad',data:d.map(m=>m.util),backgroundColor:SGD,borderRadius:3,yAxisID:'y'},
+      {label:'Files',data:d.map(m=>m.files),type:'line',borderColor:AMBER,backgroundColor:'transparent',borderWidth:2.5,pointRadius:4,pointBackgroundColor:AMBER,yAxisID:'y2',tension:.35}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.dataset.label==='Files'?fn(c.raw):fn(c.raw)+' USD'}`}}},
+      scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:v=>fn(v/1000)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}},y2:{position:'right',ticks:{font:{size:10}},grid:{display:false}}}}});
+  document.getElementById('mesTable').innerHTML=`<table><thead><tr><th class="tl">Mes</th><th>Files</th><th>Pax</th><th>Ventas USD</th><th>Utilidad USD</th><th>% Util</th></tr></thead><tbody>${
+    d.map(m=>`<tr><td class="tl">${ML[m.k]||m.k}</td><td>${fn(m.files)}</td><td>${fn(m.pax)}</td><td>${fn(m.imp)}</td><td>${fn(m.util)}</td><td>${fp(m.pct)}</td></tr>`).join('')
+  }<tr class="tot"><td class="tl">TOTAL</td><td>${fn(d.reduce((a,m)=>a+m.files,0))}</td><td>${fn(d.reduce((a,m)=>a+m.pax,0))}</td><td>${fn(d.reduce((a,m)=>a+m.imp,0))}</td><td>${fn(d.reduce((a,m)=>a+m.util,0))}</td><td></td></tr></tbody></table>`;
+}
+renderMes();
+
+/* CLIENTES */
+(()=>{
+  charts.cli=new Chart(document.getElementById('cliChart'),{type:'bar',indexAxis:'y',
+    data:{labels:CLI.map(c=>c.c),datasets:[
+      {label:'Ventas',data:CLI.map(c=>c.imp),backgroundColor:SG,borderRadius:3},
+      {label:'Utilidad',data:CLI.map(c=>c.util),backgroundColor:SGD,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fn(c.raw)} USD`}}},
+      scales:{x:{ticks:{callback:v=>fn(v/1000)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}},y:{ticks:{font:{size:11}},grid:{display:false}}}}});
+  document.getElementById('cliTable').innerHTML=`<table style="margin-top:.6rem"><thead><tr><th style="text-align:center">Pos.</th><th class="tl">Cliente</th><th>Files</th><th>Pax</th><th>Ventas USD</th><th>Utilidad USD</th><th>% Util</th></tr></thead><tbody>${
+    CLI.map((c,i)=>`<tr><td style="text-align:center">${medal(i+1)}</td><td class="tl">${c.c}</td><td>${fn(c.files)}</td><td>${fn(c.pax)}</td><td>${fn(c.imp)}</td><td>${fn(c.util)}</td><td>${fp(c.pct)}</td></tr>`).join('')
+  }</tbody></table>`;
+})();
+
+/* VENDEDOR */
+const sel=document.getElementById('vendSel');
+VENDORS.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});
+let vmMode='alta',vendC2=null;
+function setVM(m,btn){vmMode=m;document.querySelectorAll('#vendMesTabs .tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderVend();}
+function renderVend(){
+  const v=sel.value;
+  const r=RANK_IMP.find(x=>x.Vendedor===v)||{rank:'-',files:0,pax:0,imp:0,util:0,pct:0};
+  const rp=RANK_PCT.find(x=>x.Vendedor===v)||{rank:'-'};
+  const s=sem(r.pct);
+  document.getElementById('vendKpis').innerHTML=`
+    <div class="vkpi"><div class="vkpi-val">#${r.rank}</div><div class="vkpi-lbl">Rank ventas</div></div>
+    <div class="vkpi"><div class="vkpi-val">#${rp.rank}</div><div class="vkpi-lbl">Rank % util</div></div>
+    <div class="vkpi"><div class="vkpi-val">${fn(r.files)}</div><div class="vkpi-lbl">Files</div></div>
+    <div class="vkpi"><div class="vkpi-val">${fn(r.imp)}</div><div class="vkpi-lbl">Ventas USD</div></div>
+    <div class="vkpi" style="background:${s.bg};border-color:${s.tx}"><div class="vkpi-val" style="color:${s.tx}">${fp(r.pct)}</div><div class="vkpi-lbl" style="color:${s.tx}">% Utilidad</div></div>`;
+
+  const src=vmMode==='alta'?VEND_MES[v]:VEND_MES_IN[v]||[];
+  document.getElementById('vendChartT').textContent=`Evolución mensual · fecha de ${vmMode==='alta'?'alta':'ingreso'}`;
+  if(vendC2)vendC2.destroy();
+  vendC2=new Chart(document.getElementById('vendChart'),{type:'bar',
+    data:{labels:src.map(m=>ML[m.k]||m.k),datasets:[
+      {label:'Ventas',data:src.map(m=>m.imp),backgroundColor:SG,borderRadius:3},
+      {label:'Util',data:src.map(m=>m.util),backgroundColor:SGD,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fn(c.raw)} USD`}}},
+      scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{callback:v=>fn(v/1000)+'k',font:{size:10}},grid:{color:'rgba(0,0,0,.06)'}}}}});
+
+  const clis=TOP_CV[v]||[];
+  document.getElementById('vendCli').innerHTML=`<table><thead><tr><th class="tl">#</th><th class="tl">Cliente</th><th>Files</th><th>Ventas</th><th>Util</th></tr></thead><tbody>${
+    clis.map((c,i)=>`<tr><td class="tl" style="color:${i===0?'#C9A227':i===1?'#888':'#A0522D'};font-weight:700">${i+1}</td><td class="tl" style="font-size:11px">${c.c}</td><td>${fn(c.files)}</td><td>${fn(c.imp)}</td><td>${fn(c.util)}</td></tr>`).join('')
+  }</tbody></table>`;
+
+  document.getElementById('vendMesTable').innerHTML=`<table><thead><tr><th class="tl">Mes</th><th>Files</th><th>Pax</th><th>Ventas USD</th><th>Utilidad USD</th><th>% Util</th></tr></thead><tbody>${
+    src.map(m=>`<tr><td class="tl">${ML[m.k]||m.k}</td><td>${fn(m.files)}</td><td>${fn(m.pax||0)}</td><td>${fn(m.imp)}</td><td>${fn(m.util)}</td><td>${fp(m.pct)}</td></tr>`).join('')
+  }<tr class="tot"><td class="tl">TOTAL</td><td>${fn(src.reduce((a,m)=>a+m.files,0))}</td><td>${fn(src.reduce((a,m)=>a+(m.pax||0),0))}</td><td>${fn(src.reduce((a,m)=>a+m.imp,0))}</td><td>${fn(src.reduce((a,m)=>a+m.util,0))}</td><td></td></tr></tbody></table>`;
+}
+renderVend();
+
+/* ALERTAS */
+document.getElementById('negBody').innerHTML=NEG.map(n=>`<tr style="background:#FFF5F5"><td class="tl" style="font-size:11px;font-family:var(--font-mono)">${n.cod}</td><td class="tl">${n.vend}</td><td class="tl">${n.cli}</td><td style="text-align:center;font-size:10px;font-weight:600;color:${n.mon==='USD'?'#0C447C':'#1E8A35'}">${n.mon}</td><td style="text-align:center">${n.alta}</td><td>${n.pax}</td><td>${fn(n.imp)}</td><td class="neg-val">${n.util===0?'0':fn(n.util)}</td></tr>`).join('');
+document.getElementById('semTable').innerHTML=`<table><thead><tr><th style="text-align:center">Pos.</th><th class="tl">Vendedor</th><th>Files</th><th>Ventas USD</th><th>Utilidad USD</th><th>% Util</th><th>Semáforo</th></tr></thead><tbody>${
+  RANK_IMP.map(r=>{const s=sem(r.pct);return`<tr><td style="text-align:center">${medal(r.rank)}</td><td class="tl">${r.Vendedor}</td><td>${fn(r.files)}</td><td>${fn(r.imp)}</td><td>${fn(r.util)}</td><td>${fp(r.pct)}</td><td><span class="sem" style="background:${s.bg};color:${s.tx}">${s.lbl}</span></td></tr>`;}).join('')
+}</tbody></table>`;
+</script>
