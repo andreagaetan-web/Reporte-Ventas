@@ -1,0 +1,512 @@
+
+<h2 class="sr-only">Dashboard Estado de Resultados SIGA TURISMO 2026 - Enero y Febrero con rubros expandibles y análisis de irregularidades</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.header{padding:1rem 0 0.5rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem}
+.header h1{font-size:18px;font-weight:500}
+.header p{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
+.tabs{display:flex;gap:8px;margin-bottom:1rem}
+.tab{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:transparent;color:var(--color-text-secondary)}
+.tab.active{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1rem}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.75rem 1rem}
+.metric .label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric .value{font-size:20px;font-weight:500}
+.metric .sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.metric.danger .value{color:#C0392B}
+.metric.success .value{color:#1D9E75}
+.metric.warn .value{color:#BA7517}
+.section{margin-bottom:6px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:var(--color-background-primary);user-select:none}
+.section-header:hover{background:var(--color-background-secondary)}
+.section-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.section-label .icon{font-size:12px;color:var(--color-text-tertiary);transition:transform 0.2s}
+.section-label .icon.open{transform:rotate(90deg)}
+.section-values{display:flex;gap:24px;align-items:center}
+.col-val{text-align:right;font-size:13px;min-width:100px}
+.col-val .label{font-size:10px;color:var(--color-text-tertiary);display:block}
+.col-val .num{font-weight:500}
+.neg{color:#C0392B}
+.pos{color:#1D9E75}
+.section-body{display:none;border-top:0.5px solid var(--color-border-tertiary)}
+.section-body.open{display:block}
+.sub-row{display:flex;justify-content:space-between;align-items:center;padding:7px 14px 7px 32px;font-size:12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sub-row:last-child{border-bottom:none}
+.sub-row:hover{background:var(--color-background-secondary)}
+.sub-name{color:var(--color-text-secondary);flex:1}
+.sub-vals{display:flex;gap:24px}
+.sub-val{text-align:right;min-width:100px;font-size:12px}
+.badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;margin-left:6px}
+.badge.warn{background:#FAEEDA;color:#633806}
+.badge.danger{background:#FCEBEB;color:#501313}
+.badge.ok{background:#EAF3DE;color:#173404}
+.alert-box{background:#FAEEDA;border:0.5px solid #F0997B;border-radius:var(--border-radius-md);padding:12px 14px;margin-bottom:1rem;font-size:12px;color:#633806}
+.alert-box strong{font-weight:500;display:block;margin-bottom:4px;font-size:13px}
+.alert-box ul{padding-left:16px;margin-top:4px}
+.alert-box li{margin-bottom:3px}
+.chart-wrap{position:relative;width:100%;height:220px;margin-bottom:1rem}
+.col-header{display:flex;justify-content:flex-end;gap:24px;padding:0 14px;margin-bottom:4px}
+.col-header span{text-align:right;min-width:100px;font-size:11px;color:var(--color-text-tertiary);font-weight:500}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:6px;font-size:13px;font-weight:500}
+</style>
+
+<div class="header">
+  <h1>Estado de resultados — SIGA TURISMO S.A. 2026</h1>
+  <p>Saldo ARS · Datos: enero y febrero 2026 (mar–dic sin datos aún)</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="setView('anual')">Acumulado anual</button>
+  <button class="tab" onclick="setView('ene')">Enero 2026</button>
+  <button class="tab" onclick="setView('feb')">Febrero 2026</button>
+  <button class="tab" onclick="setView('alertas')">Irregularidades</button>
+</div>
+
+<div id="view-anual">
+  <div class="metrics">
+    <div class="metric">
+      <div class="label">Ventas totales</div>
+      <div class="value">$10.754M</div>
+      <div class="sub">Facturación bruta</div>
+    </div>
+    <div class="metric success">
+      <div class="label">Total ingresos (utilidad)</div>
+      <div class="value">$562M</div>
+      <div class="sub">Margen 5.2%</div>
+    </div>
+    <div class="metric">
+      <div class="label">Costos fijos totales</div>
+      <div class="value">$426M</div>
+      <div class="sub">Personal + estructura</div>
+    </div>
+    <div class="metric success">
+      <div class="label">Utilidad final</div>
+      <div class="value">$57.3M</div>
+      <div class="sub">Incluye result. financieros</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="chartAnual" role="img" aria-label="Comparativo enero vs febrero 2026: ingresos, costos, utilidad operativa">Enero: ingresos 345M, costos 266M, util. 80M. Febrero: ingresos 216M, costos 259M, util. -42M.</canvas>
+  </div>
+
+  <div class="col-header">
+    <span>ENE</span><span>FEB</span><span>ACUM.</span>
+  </div>
+
+  <div id="tree-anual"></div>
+</div>
+
+<div id="view-ene" style="display:none">
+  <div class="metrics">
+    <div class="metric">
+      <div class="label">Ventas totales</div>
+      <div class="value">$5.932M</div>
+      <div class="sub">Enero 2026</div>
+    </div>
+    <div class="metric success">
+      <div class="label">Total ingresos</div>
+      <div class="value">$345.7M</div>
+      <div class="sub">Margen 5.83%</div>
+    </div>
+    <div class="metric danger">
+      <div class="label">Costos fijos</div>
+      <div class="value">$216.3M</div>
+      <div class="sub">Gastos estructura</div>
+    </div>
+    <div class="metric success">
+      <div class="label">Util. operativa</div>
+      <div class="value">$80.1M</div>
+      <div class="sub">Antes prorrateo</div>
+    </div>
+  </div>
+  <div id="tree-ene"></div>
+</div>
+
+<div id="view-feb" style="display:none">
+  <div class="metrics">
+    <div class="metric">
+      <div class="label">Ventas totales</div>
+      <div class="value">$4.822M</div>
+      <div class="sub">Febrero 2026</div>
+    </div>
+    <div class="metric warn">
+      <div class="label">Total ingresos</div>
+      <div class="value">$216.4M</div>
+      <div class="sub">Margen 4.49%</div>
+    </div>
+    <div class="metric danger">
+      <div class="label">Costos fijos</div>
+      <div class="value">$210.4M</div>
+      <div class="sub">Gastos estructura</div>
+    </div>
+    <div class="metric danger">
+      <div class="label">Util. operativa</div>
+      <div class="value">-$42.3M</div>
+      <div class="sub">Resultado negativo</div>
+    </div>
+  </div>
+  <div id="tree-feb"></div>
+</div>
+
+<div id="view-alertas" style="display:none">
+  <div class="alert-box" style="background:#FCEBEB;border-color:#F09595;color:#501313">
+    <strong>⚠ Caída crítica de utilidad operativa entre enero y febrero</strong>
+    <ul>
+      <li>Enero: +$80.1M (utilidad) → Febrero: -$42.3M (pérdida). Caída de $122M en un mes.</li>
+      <li>Las ventas cayeron de $5.932M a $4.822M (−19%), pero los costos fijos se mantuvieron similares ($216M vs $210M).</li>
+      <li>Los ingresos por utilidad/comisiones cayeron de $272M a $183M (−33%), indicando menor margen por venta.</li>
+    </ul>
+  </div>
+  <div class="alert-box">
+    <strong>⚠ Pérdidas asumidas en febrero: -$16.4M</strong>
+    <ul>
+      <li>En enero no existe este ítem; en febrero aparece "Pérdidas asumidas" por $16.4M negativo dentro de Otros Ingresos.</li>
+      <li>Esto reduce drásticamente el rubro 1.2 Otros Ingresos de $73M (enero) a $33.3M (febrero).</li>
+      <li>Se requiere investigar el origen: errores operativos, ajustes de costo o devoluciones masivas.</li>
+    </ul>
+  </div>
+  <div class="alert-box">
+    <strong>⚠ Gastos bancarios excesivos: $90.7M acumulado</strong>
+    <ul>
+      <li>El Impuesto al Crédito concentra el 60% ($54.5M): $30.7M en enero y $23.8M en febrero.</li>
+      <li>Este rubro supera al total de honorarios ($53.9M) y casi iguala a los gastos comerciales + mantenimiento combinados.</li>
+      <li>En enero representó el 24% del total de costos fijos ($216M).</li>
+    </ul>
+  </div>
+  <div class="alert-box">
+    <strong>⚠ Honorarios de Dirección y Consultoría elevados</strong>
+    <ul>
+      <li>Honorarios Director: $16.4M acumulado (9.15M enero + 7.25M febrero).</li>
+      <li>Honorarios Consultoría: $12.3M acumulado — sin comparativo previo para validar si es razonable.</li>
+      <li>Honorarios Marketing: $10.4M acumulado (3.17M enero + 7.22M febrero). El de febrero duplica al de enero.</li>
+    </ul>
+  </div>
+  <div class="alert-box" style="background:#EAF3DE;border-color:#97C459;color:#173404">
+    <strong>✓ Resultado financiero positivo como amortiguador</strong>
+    <ul>
+      <li>Los Resultados Financieros aportaron $19.5M acumulado (intereses ganados + diferencia de cambio).</li>
+      <li>Sin este aporte, la utilidad final acumulada sería $37.8M en lugar de $57.3M.</li>
+      <li>Este soporte puede no ser sostenible si las tasas de interés bajan o el tipo de cambio MEP se estabiliza.</li>
+    </ul>
+  </div>
+  <div class="alert-box">
+    <strong>⚠ Gastos de Mantenimiento de Sistemas concentrados en enero</strong>
+    <ul>
+      <li>Enero: $3.67M en Mantenimiento de Sistemas → Febrero: $0. Pago único anual o semestral.</li>
+      <li>Si se prorratean mensualmente, el costo real mensual de Mantenimiento debería ser ~$2.67M.</li>
+    </ul>
+  </div>
+  <div class="alert-box">
+    <strong>⚠ Gastos por errores operativos crecientes</strong>
+    <ul>
+      <li>Enero: $688K → Febrero: $3.55M. Crecimiento de 416% en un solo mes.</li>
+      <li>Requiere revisión urgente de procesos de emisión y control de reservas.</li>
+    </ul>
+  </div>
+  <div class="alert-box">
+    <strong>⚠ Marzo a diciembre sin datos</strong>
+    <ul>
+      <li>Las hojas MAR a DIC están completamente en cero. Confirmar si el informe fue entregado incompleto o si los datos aún no fueron cargados al ERP.</li>
+    </ul>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const fmt = v => {
+  const abs = Math.abs(v);
+  let s;
+  if(abs>=1e9) s=(v/1e9).toFixed(2)+'B';
+  else if(abs>=1e6) s=(v/1e6).toFixed(1)+'M';
+  else if(abs>=1e3) s=(v/1e3).toFixed(0)+'K';
+  else s=v.toFixed(0);
+  return '$'+s;
+};
+
+const data = {
+  rubros:[
+    {
+      label:'1.1 Utilidad (comisiones)',
+      ene:272688959,feb:183119106,anual:455808065,tipo:'ingreso',
+      subs:[
+        {name:'Comisiones',ene:246745410,feb:167284748,anual:414030158},
+        {name:'Travel',ene:25943549,feb:15834358,anual:41777907}
+      ]
+    },
+    {
+      label:'1.2 Otros ingresos',
+      ene:73017070,feb:33317732,anual:106334803,tipo:'ingreso',
+      subs:[
+        {name:'Recupero Gtos. Admin.',ene:43749751,feb:36538271,anual:80288022},
+        {name:'Recupero Gtos. Reserva',ene:15214135,feb:10941798,anual:26155933},
+        {name:'MKT Neto (TC MEP)',ene:11017068,feb:0,anual:11017068},
+        {name:'Recupero Nemo',ene:2521228,feb:488364,anual:3009592},
+        {name:'Ingresos Incentivos',ene:175000,feb:1168306,anual:1343306},
+        {name:'Recupero por Tarjeta',ene:17941,feb:452349,anual:470290},
+        {name:'Otros Ingresos',ene:260682,feb:137940,anual:398623},
+        {name:'Rappel',ene:61265,feb:0,anual:61265},
+        {name:'Pérdidas Asumidas',ene:0,feb:-16409296,anual:-16409296}
+      ]
+    },
+    {
+      label:'2.1 Gastos variables',
+      ene:-49294256,feb:-48345832,anual:-97640088,tipo:'gasto',
+      subs:[
+        {name:'Ingresos Brutos',ene:-20233093,feb:-19167304,anual:-39400398},
+        {name:'Comisiones pagadas',ene:-24595300,feb:-21534285,anual:-46129585},
+        {name:'Comercio e Industria',ene:-3777708,feb:-3580796,anual:-7358504},
+        {name:'Gtos. x Errores Oper.',ene:-688155,feb:-3553238,anual:-4241393},
+        {name:'Gastos Tarjetas',ene:0,feb:-510208,anual:-510208}
+      ]
+    },
+    {
+      label:'3.1 Gastos de personal',
+      ene:-119697621,feb:-129673707,anual:-249371328,tipo:'gasto',
+      subs:[
+        {name:'Sueldos',ene:-93831297,feb:-104798433,anual:-198629730},
+        {name:'Cargas Sociales',ene:-19940954,feb:-18878952,anual:-38819906},
+        {name:'Obra Social',ene:-3727870,feb:-4447605,anual:-8175475},
+        {name:'Capacitación',ene:-860500,feb:-1147000,anual:-2007500},
+        {name:'Agasajos Empleados',ene:-1280000,feb:-299064,anual:-1579064},
+        {name:'Otros Gtos. Personal',ene:-57000,feb:-102653,anual:-159653}
+      ]
+    },
+    {
+      label:'3.2 Honorarios',
+      ene:-26265959,feb:-27599597,anual:-53865556,tipo:'gasto',
+      subs:[
+        {name:'Honorarios Director',ene:-9150000,feb:-7250000,anual:-16400000},
+        {name:'Honorarios Consultoría',ene:-7648000,feb:-4638000,anual:-12286000},
+        {name:'Honorarios Marketing',ene:-3173700,feb:-7222752,anual:-10396452},
+        {name:'Sistemas',ene:-3729050,feb:-3706292,anual:-7435342},
+        {name:'Honorarios Contables',ene:-750000,feb:-1302479,anual:-2052479},
+        {name:'Honorarios Admin.',ene:-1815209,feb:-3480074,anual:-5295283}
+      ]
+    },
+    {
+      label:'3.3 Mantenimiento',
+      ene:-5139703,feb:-194500,anual:-5334203,tipo:'gasto',
+      subs:[
+        {name:'Mant. Sistemas',ene:-3677395,feb:0,anual:-3677395},
+        {name:'Mant. Hardware',ene:-970308,feb:-182500,anual:-1152808},
+        {name:'Mant. Instalaciones',ene:-480000,feb:0,anual:-480000},
+        {name:'Mant. Oficinas',ene:-12000,feb:-12000,anual:-24000}
+      ]
+    },
+    {
+      label:'3.4 Servicios',
+      ene:-1099133,feb:-1836923,anual:-2936056,tipo:'gasto',
+      subs:[
+        {name:'Teléfono',ene:-648641,feb:-747276,anual:-1395917},
+        {name:'Agua',ene:-318602,feb:-156392,anual:-474994},
+        {name:'Internet',ene:-131891,feb:-133594,anual:-265485},
+        {name:'Luz',ene:0,feb:-799662,anual:-799662}
+      ]
+    },
+    {
+      label:'3.5 Impuestos',
+      ene:-519738,feb:-3602530,anual:-4122268,tipo:'gasto',
+      subs:[
+        {name:'Otros Impuestos',ene:-1966,feb:-3067680,anual:-3069646},
+        {name:'Imp. Inmuebles',ene:-364639,feb:-379547,anual:-744186},
+        {name:'Imp. Vehículo',ene:-146370,feb:-155303,anual:-301673},
+        {name:'Imp. Sellos',ene:-6233,feb:0,anual:-6233},
+        {name:'Int. Impositivos',ene:-530,feb:0,anual:-530}
+      ]
+    },
+    {
+      label:'3.6 Seguros',
+      ene:-23708,feb:-593249,anual:-616957,tipo:'gasto',
+      subs:[
+        {name:'Otros Seguros',ene:-23708,feb:-593249,anual:-616957}
+      ]
+    },
+    {
+      label:'3.7 Gastos comerciales',
+      ene:-7522565,feb:-3809981,anual:-11332546,tipo:'gasto',
+      subs:[
+        {name:'Gastos de Viaje',ene:-3578839,feb:-1574846,anual:-5153685},
+        {name:'Otros Gtos. Comerc.',ene:-1433000,feb:-220000,anual:-1653000},
+        {name:'Cuotas Asociaciones',ene:-841400,feb:-858100,anual:-1699500},
+        {name:'Movilidad',ene:-526113,feb:-609885,anual:-1135998},
+        {name:'Marketing',ene:-662497,feb:-220139,anual:-882636},
+        {name:'Visitas a Clientes',ene:-235906,feb:-12800,anual:-248706},
+        {name:'Gastos Generales',ene:-224811,feb:-224812,anual:-449623},
+        {name:'Envíos',ene:-20000,feb:-89400,anual:-109400}
+      ]
+    },
+    {
+      label:'3.8 Otros gastos',
+      ene:-4006711,feb:-4375767,anual:-8382478,tipo:'gasto',
+      subs:[
+        {name:'Gastos de Oficina',ene:-927298,feb:-1030102,anual:-1957400},
+        {name:'Alquiler Piso 1',ene:-1213666,feb:-1213666,anual:-2427332},
+        {name:'Alquiler Piso 3',ene:-909381,feb:-909381,anual:-1818762},
+        {name:'Expensas Piso 1',ene:-501920,feb:-533088,anual:-1035008},
+        {name:'Expensas Piso 3',ene:-368400,feb:-393616,anual:-762016},
+        {name:'Donación',ene:-86046,feb:-289015,anual:-375061}
+      ]
+    },
+    {
+      label:'3.9 Gastos bancarios',
+      ene:-52004089,feb:-38701654,anual:-90705743,tipo:'gasto',
+      subs:[
+        {name:'Impuesto al Crédito',ene:-30762801,feb:-23761370,anual:-54524171},
+        {name:'Gastos Bancarios',ene:-20870386,feb:-13956114,anual:-34826500},
+        {name:'Gtos. Cta. Comitente',ene:-161826,feb:-864841,anual:-1026667},
+        {name:'Gastos Tarjetas',ene:-209076,feb:-119329,anual:-328406}
+      ]
+    },
+    {
+      label:'4.1 Resultados financieros',
+      ene:8606178,feb:10854314,anual:19460492,tipo:'ingreso',
+      subs:[
+        {name:'Intereses Ganados',ene:7840201,feb:5893903,anual:13734104},
+        {name:'Diferencia de Cambio',ene:523823,feb:2500035,anual:3023858},
+        {name:'Resultados Financieros',ene:242155,feb:2460376,anual:2702531}
+      ]
+    }
+  ]
+};
+
+function buildTree(containerId, col){
+  const container = document.getElementById(containerId);
+  container.innerHTML='';
+
+  const totRow = (label, val)=>{
+    const r=document.createElement('div');
+    r.className='total-row';
+    const cls = val>=0?'pos':'neg';
+    r.innerHTML=`<span>${label}</span><span class="${cls}">${fmt(val)}</span>`;
+    container.appendChild(r);
+  };
+
+  if(col==='anual'){
+    totRow('Total ingresos acumulado', 562142868);
+    totRow('Total gastos variables', -97640088);
+    totRow('Total costos fijos', -426667136);
+    totRow('Utilidad final acumulada', 57296136);
+  } else if(col==='ene'){
+    totRow('Total ingresos enero', 345706029);
+    totRow('Total costos fijos enero', -216279227);
+    totRow('Utilidad operativa enero', 80132546);
+    totRow('Utilidad final enero', 88738724);
+  } else {
+    totRow('Total ingresos febrero', 216436838);
+    totRow('Total costos fijos febrero', -210387908);
+    totRow('Utilidad operativa febrero', -42296901);
+    totRow('Utilidad final febrero', -31442588);
+  }
+
+  data.rubros.forEach((r,i)=>{
+    const sec=document.createElement('div');
+    sec.className='section';
+
+    let eVal = r.ene, fVal = r.feb, aVal = r.anual;
+    const dispCol = col;
+    let mainVal = dispCol==='ene'?eVal:dispCol==='feb'?fVal:aVal;
+    const isBad = (r.tipo==='ingreso' && mainVal<0)||(r.tipo==='gasto' && mainVal>0);
+    const cls = mainVal>=0?(r.tipo==='gasto'?'neg':'pos'):'neg';
+
+    let badge='';
+    if(r.label.includes('Gastos bancarios')) badge='<span class="badge warn">⚠ elevado</span>';
+    if(r.label.includes('Pérdidas') || (r.tipo==='ingreso'&&mainVal<0)) badge='<span class="badge danger">⚠ atención</span>';
+    if(r.label.includes('personal') && Math.abs(mainVal)>100000000) badge='<span class="badge warn">mayor rubro</span>';
+
+    const buildVals = ()=>{
+      if(col==='anual'){
+        return `<div class="section-values">
+          <div class="col-val"><span class="label">ENE</span><span class="num ${eVal>=0?(r.tipo==='gasto'?'neg':'pos'):'neg'}">${fmt(eVal)}</span></div>
+          <div class="col-val"><span class="label">FEB</span><span class="num ${fVal>=0?(r.tipo==='gasto'?'neg':'pos'):'neg'}">${fmt(fVal)}</span></div>
+          <div class="col-val"><span class="label">ACUM.</span><span class="num ${cls}">${fmt(aVal)}</span></div>
+        </div>`;
+      } else {
+        return `<div class="section-values">
+          <div class="col-val"><span class="label">${col.toUpperCase()}</span><span class="num ${cls}">${fmt(mainVal)}</span></div>
+        </div>`;
+      }
+    };
+
+    sec.innerHTML=`
+      <div class="section-header" onclick="toggle(this)">
+        <div class="section-label">
+          <span class="icon">▶</span>
+          ${r.label}${badge}
+        </div>
+        ${buildVals()}
+      </div>
+      <div class="section-body">
+        ${r.subs.map(s=>{
+          let sv = col==='ene'?s.ene:col==='feb'?s.feb:s.anual;
+          const sc = sv>=0?(r.tipo==='gasto'?'neg':'pos'):'neg';
+          if(col==='anual'){
+            return `<div class="sub-row">
+              <span class="sub-name">${s.name}</span>
+              <div class="sub-vals">
+                <span class="sub-val ${s.ene>=0?(r.tipo==='gasto'?'neg':'pos'):'neg'}">${fmt(s.ene)}</span>
+                <span class="sub-val ${s.feb>=0?(r.tipo==='gasto'?'neg':'pos'):'neg'}">${fmt(s.feb)}</span>
+                <span class="sub-val ${s.anual>=0?(r.tipo==='gasto'?'neg':'pos'):'neg'}">${fmt(s.anual)}</span>
+              </div>
+            </div>`;
+          } else {
+            return `<div class="sub-row">
+              <span class="sub-name">${s.name}</span>
+              <span class="sub-val ${sc}">${fmt(sv)}</span>
+            </div>`;
+          }
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(sec);
+  });
+}
+
+function toggle(header){
+  const icon = header.querySelector('.icon');
+  const body = header.nextElementSibling;
+  icon.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+function setView(v){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  ['anual','ene','feb','alertas'].forEach(id=>{
+    document.getElementById('view-'+id).style.display = id===v?'block':'none';
+  });
+}
+
+buildTree('tree-anual','anual');
+buildTree('tree-ene','ene');
+buildTree('tree-feb','feb');
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+new Chart(document.getElementById('chartAnual'),{
+  type:'bar',
+  data:{
+    labels:['Enero','Febrero'],
+    datasets:[
+      {label:'Total ingresos',data:[345.7,216.4],backgroundColor:'#1D9E75',borderWidth:0},
+      {label:'Costos fijos',data:[216.3,210.4],backgroundColor:'#D85A30',borderWidth:0},
+      {label:'Util. operativa',data:[80.1,-42.3],backgroundColor:'#378ADD',borderWidth:0}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:isDark?'#888':'#5F5E5A'}},
+      y:{ticks:{callback:v=>v+'M',color:isDark?'#888':'#5F5E5A'},grid:{color:isDark?'rgba(255,255,255,.07)':'rgba(0,0,0,.07)'}}
+    }
+  }
+});
+</script>
+
+<div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary)">
+  <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>Total ingresos (M ARS)</span>
+  <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#D85A30"></span>Costos fijos (M ARS)</span>
+  <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD"></span>Util. operativa (M ARS)</span>
+</div>
